@@ -25,11 +25,11 @@ class Api::TracksController < ApplicationController
     render json: @track
   end
 
-  def update
-    @track = Todo.find(params[:id])
-    @track.update(track_params)
-    render json: @track
-  end
+  # def update
+  #   @track = Todo.find(params[:id])
+  #   @track.update(track_params)
+  #   render json: @track
+  # end
 
   private
 

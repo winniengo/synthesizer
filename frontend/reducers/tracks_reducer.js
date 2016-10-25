@@ -4,6 +4,8 @@ import { START_RECORDING,
          DELETE_TRACK
        } from '../actions/tracks_actions';
 
+import { RECEIVE_TRACKS } from '../actions/tracks_actions';
+
 import merge from 'lodash/merge';
 
 let currTrackId = 0;
@@ -39,6 +41,8 @@ const trackReducer = (state, action) => {
 
 const tracksReducer = (state = {}, action) => {
   Object.freeze(state);
+  let nextState;
+
   switch(action.type) {
     case START_RECORDING:
       currTrackId++; // increment id of current (newest) track
@@ -54,8 +58,16 @@ const tracksReducer = (state = {}, action) => {
         [currTrackId]: trackReducer(state[currTrackId], action)
       });
     case DELETE_TRACK:
-      let nextState = merge({}, state);
+      nextState = merge({}, state);
       delete nextState[action.id];
+      return nextState;
+    case RECEIVE_TRACKS:
+      nextState = merge({}, state);
+      action.tracks.forEach(track => {
+        nextState[track.id] = merge({}, track, {
+          roll: JSON.parse(track.roll)
+        })
+      })
       return nextState;
     default:
       return state;
