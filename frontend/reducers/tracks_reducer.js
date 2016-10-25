@@ -4,22 +4,22 @@ import { START_RECORDING,
          DELETE_TRACK
        } from '../actions/tracks_actions';
 
-import { RECEIVE_TRACKS } from '../actions/tracks_actions';
+import { RECEIVE_TRACKS, RECEIVE_TRACK } from '../actions/tracks_actions';
 
 import merge from 'lodash/merge';
 
-let currTrackId = 0;
+// let currTrackId = 0;
 
 const trackReducer = (state, action) => {
   Object.freeze(state);
   switch(action.type) {
-    case START_RECORDING:
-      return {
-        id: currTrackId,
-        name: `Track ${currTrackId}`,
-        roll: [],
-        timeStart: action.timeStart
-      };
+    // case START_RECORDING:
+    //   return {
+    //     id: currTrackId,
+    //     name: `Track ${currTrackId}`,
+    //     roll: [],
+    //     timeStart: action.timeStart
+    //   };
     case STOP_RECORDING:
       return merge({}, state, {
         roll: [
@@ -34,28 +34,41 @@ const trackReducer = (state, action) => {
           { notes: action.notes, timeSlice: action.timeNow - state.timeStart }
         ]
       });
+    case START_RECORDING:
+      return {
+        id: null,
+        name: 'Untitled',
+        roll: [],
+        timeStart: action.timeStart
+      };
+    case RECEIVE_TRACK:
+      return merge({}, state, {
+        roll: JSON.parse(state.roll),
+        name: `Track ${state.id}`
+      })
     default:
       return state;
   }
 };
 
 const tracksReducer = (state = {}, action) => {
+  console.log(action);
   Object.freeze(state);
   let nextState;
 
   switch(action.type) {
-    case START_RECORDING:
-      currTrackId++; // increment id of current (newest) track
-      return merge({}, state, {
-        [currTrackId]: trackReducer(undefined, action)
-      });
+    // case START_RECORDING:
+    //   currTrackId++; // increment id of current (newest) track
+    //   return merge({}, state, {
+    //     [currTrackId]: trackReducer(undefined, action)
+    //   });
+    // case ADD_NOTES:
+    // return merge({}, state, {
+    //   [currTrackId]: trackReducer(state[currTrackId], action)
+    // });
     case STOP_RECORDING:
       return merge({}, state, {
-        [currTrackId]: trackReducer(state[currTrackId], action)
-      });
-    case ADD_NOTES:
-      return merge({}, state, {
-        [currTrackId]: trackReducer(state[currTrackId], action)
+        null: trackReducer(state[null], action)
       });
     case DELETE_TRACK:
       nextState = merge({}, state);
@@ -68,6 +81,20 @@ const tracksReducer = (state = {}, action) => {
           roll: JSON.parse(track.roll)
         })
       })
+      return nextState;
+    case START_RECORDING:
+      return merge({}, state, {
+        null: trackReducer(undefined, action)
+      });
+    case ADD_NOTES:
+      return merge({}, state, {
+        null: trackReducer(state[null], action)
+      });
+    case RECEIVE_TRACK:
+      nextState = merge({}, state, {
+        [action.track.id]: trackReducer(action.track, action)
+      });
+      delete nextState[null];
       return nextState;
     default:
       return state;

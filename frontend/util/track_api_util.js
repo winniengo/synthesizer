@@ -10,25 +10,16 @@ export const createTrack = (track, success, error) => {
   $.ajax({
     method: 'POST',
     url: 'api/tracks',
-    data: track,
+    data: {track},
     success,
     error
   });
 };
 
-// export const updateTrack = (track, success) => {
-//   $.ajax({
-//     method: 'PATCH',
-//     url: `api/tracks/${track.id}`,
-//     data: { track },
-//     success
-//   });
-// };
-
-export const destroyTrack = (track, success) => {
+export const destroyTrack = (id, success) => {
   $.ajax({
     method: 'DELETE',
-    url: `api/tracks/${track.id}`,
+    url: `api/tracks/${id}`,
     success
   });
 };

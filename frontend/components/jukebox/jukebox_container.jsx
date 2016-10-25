@@ -4,7 +4,7 @@ import { groupUpdate } from '../../actions/notes_actions';
 import { startPlaying, stopPlaying } from '../../actions/playing_actions';
 import Jukebox from './jukebox';
 
-import { requestTracks } from '../../actions/tracks_actions';
+import { requestTracks, destroyTrack } from '../../actions/tracks_actions';
 
 const mapStateToProps = ({ tracks, isRecording, isPlaying }) => ({
   tracks,
@@ -14,6 +14,7 @@ const mapStateToProps = ({ tracks, isRecording, isPlaying }) => ({
 
 const mapDispatchToProps = dispatch => ({
   requestTracks: () => dispatch(requestTracks()),
+  destroyTrack: id => dispatch(destroyTrack(id)),
   onDelete: id => e => dispatch(deleteTrack(id)),
   onPlay: track => e => {
     dispatch(startPlaying());

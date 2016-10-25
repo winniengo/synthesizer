@@ -15,14 +15,14 @@ class Api::TracksController < ApplicationController
     if @track.save
       render json: @track
     else
-      render json: @todo.errors.full_messages, status: 422
+      render json: @track.errors.full_messages, status: 422
     end
   end
 
   def destroy
     @track = Track.find(params[:id])
     @track.destroy
-    render json: @track
+    render json: @track.id
   end
 
   # def update

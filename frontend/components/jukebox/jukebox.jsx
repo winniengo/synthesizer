@@ -28,8 +28,12 @@ class Jukebox extends React.Component {
     this.props.requestTracks();
   }
 
+  onDestroy(id) {
+    return e => this.props.destroyTrack(id);
+  }
+
   render() {
-    const { tracks, isRecording, isPlaying, onDelete, onPlay } = this.props;
+    const { tracks, isRecording, isPlaying, onPlay } = this.props;
     return (
       <div className="juke-box">
         <div className='juke-box-title'>
@@ -42,7 +46,7 @@ class Jukebox extends React.Component {
               track={tracks[id]}
               disabled={isRecording || isPlaying}
               onPlay={onPlay(tracks[id])}
-              onDelete={onDelete(id)} />
+              onDelete={this.onDestroy(id)} />
           ))}
         </div>
       </div>
